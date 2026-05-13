@@ -12,6 +12,7 @@
     <div class="counters" aria-live="polite">
       <span class="counter total" id="total-count">Всего 0/25</span>
     </div>
+    <input id="name-input" class="name-input" type="text" maxlength="40" placeholder="Ваше имя" aria-label="Имя" />
     <div class="actions">
       <button id="generate-btn" type="button" disabled>Сгенерировать карточку</button>
       <button id="clear-btn" type="button">Очистить</button>
@@ -38,6 +39,7 @@
     </section>
 
     <section id="card-view" class="card-view" hidden>
+      <h2 id="card-title" class="card-title"></h2>
       <div class="card-actions no-print">
         <button id="reshuffle-btn" type="button">Сгенерировать заново</button>
         <button id="edit-btn" type="button">Редактировать выбор</button>
