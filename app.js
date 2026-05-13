@@ -24,6 +24,8 @@ const els = {
   shareBtn: document.getElementById('share-btn'),
   shareFeedback: document.getElementById('share-feedback'),
   card: document.getElementById('bingo-card'),
+  nameInput: document.getElementById('name-input'),
+  cardTitle: document.getElementById('card-title'),
 };
 
 // -- PRNG (mulberry32) --------------------------------------------------------
@@ -95,7 +97,9 @@ function toggle(id) {
 function renderPicker() {
   const c = counts();
   els.totalCount.textContent = ` Всего ${c.total}/${TOTAL_PICKS}`;
-  els.generateBtn.disabled = c.total !== TOTAL_PICKS;
+  const hasName = !!(els.nameInput.value || '').trim();
+  els.generateBtn.disabled = c.total !== TOTAL_PICKS || !hasName;
+  els.generateBtn.title = !hasName ? 'Введите имя, чтобы сгенерировать карточку' : '';
 
   const easyFull = c.easy >= MAX_EASY;
   const totalFull = c.total >= TOTAL_PICKS;
@@ -130,6 +134,12 @@ function buildPicker() {
     li.appendChild(btn);
     (item.difficulty === 'easy' ? els.easyList : els.hardList).appendChild(li);
   }
+}
+
+function renderCardTitle() {
+  const name = (els.nameInput.value || '').trim();
+  els.cardTitle.textContent = name ? `Бинго: ${name}` : '';
+  els.cardTitle.hidden = !name;
 }
 
 // -- Card rendering -----------------------------------------------------------
@@ -172,6 +182,7 @@ function generateCard(seed) {
   }
   state.cardOrder = order;
   renderCard();
+  renderCardTitle();
   updateHash(ids, usedSeed);
   showCardView();
   return true;
@@ -200,7 +211,9 @@ function encodeHash(ids, seed) {
   const bytes = new Uint8Array(indexes);
   const b64 = btoa(String.fromCharCode(...bytes))
     .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-  return `#c=${b64}&s=${seed.toString(36)}`;
+  const name = (els.nameInput.value || '').trim();
+  const nameParam = name ? `&n=${encodeURIComponent(name)}` : '';
+  return `#c=${b64}&s=${seed.toString(36)}${nameParam}`;
 }
 
 function decodeHash(hash) {
@@ -223,7 +236,8 @@ function decodeHash(hash) {
     }
     const seed = parseInt(s, 36);
     if (!Number.isFinite(seed)) return null;
-    return { ids, seed };
+    const name = params.get('n') || '';
+    return { ids, seed, name };
   } catch {
     return null;
   }
@@ -257,6 +271,17 @@ function wireEvents() {
   els.reshuffleBtn.addEventListener('click', () => generateCard());
   els.editBtn.addEventListener('click', () => showPickerView());
   els.printBtn.addEventListener('click', () => window.print());
+  els.nameInput.addEventListener('input', () => {
+    renderCardTitle();
+    renderPicker();
+    if (state.cardOrder.length === GRID_SIZE) {
+      // refresh hash so name persists in shared URL
+      const ids = Array.from(state.selected);
+      const params = new URLSearchParams(location.hash.slice(1));
+      const seed = parseInt(params.get('s') || '0', 36) || 0;
+      updateHash(ids, seed);
+    }
+  });
   els.shareBtn.addEventListener('click', async () => {
     try {
       await navigator.clipboard.writeText(location.href);
@@ -283,6 +308,7 @@ async function init() {
   const restored = decodeHash(location.hash);
   if (restored) {
     state.selected = new Set(restored.ids);
+    if (restored.name) els.nameInput.value = restored.name;
     renderPicker();
     generateCard(restored.seed);
   } else {
