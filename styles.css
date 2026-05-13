@@ -34,9 +34,31 @@ body.view-picker #card-view { display: none; }
   border-bottom: 1px solid var(--border);
   padding: 1rem 1.5rem;
   display: grid;
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: 1fr auto auto auto;
   gap: 1rem;
   align-items: center;
+}
+
+.name-input {
+  font: inherit;
+  padding: 0.45rem 0.7rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--fg);
+  min-width: 10rem;
+}
+.name-input::placeholder { color: var(--muted); }
+.name-input:focus { outline: none; border-color: var(--accent-2); }
+
+.card-title {
+  margin: 0;
+  font-size: 1.5rem;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-align: center;
 }
 
 .app-header h1 {
@@ -235,7 +257,13 @@ main { padding: 1.5rem; max-width: 1100px; margin: 0 auto; }
   body { background: #fff; color: #000; }
   .app-header, .no-print, .hint { display: none !important; }
   main { padding: 0; }
-  .card-view { gap: 0; }
+  .card-view { gap: 0.5rem; }
+  .card-title {
+    color: #000 !important;
+    background: none !important;
+    -webkit-text-fill-color: #000 !important;
+    font-size: 18pt;
+  }
   .bingo-card {
     width: 95vw;
     height: 95vh;
