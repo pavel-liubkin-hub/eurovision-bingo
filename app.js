@@ -122,9 +122,9 @@ function buildPicker() {
     const li = document.createElement('li');
     const btn = document.createElement('button');
     btn.type = 'button';
-    btn.className = `item ${lengthTier(item.text)}`;
+    btn.className = `item`;
     btn.id = `item-${item.id}`;
-    btn.textContent = formatText(item.text);
+    btn.textContent = item.text;
     btn.setAttribute('aria-pressed', 'false');
     btn.addEventListener('click', () => toggle(item.id));
     li.appendChild(btn);
