@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eurovision Bingo</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="view-picker">
+  <header class="app-header">
+    <h1>Евровидение Бинго</h1>
+    <div class="counters" aria-live="polite">
+      <span class="counter total" id="total-count">Всего 0/25</span>
+    </div>
+    <div class="actions">
+      <button id="generate-btn" type="button" disabled>Сгенерировать карточку</button>
+      <button id="clear-btn" type="button">Очистить</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="picker-view" class="picker">
+      <p class="hint">
+        Выберите 25 элементов, чтобы заполнить свою карточку 5&times;5. Вы <strong>не можете выбрать</strong> 
+        больше простых вариантов, чем сложных!
+      </p>
+
+      <div class="columns">
+        <section class="column">
+          <h2>Простые</h2>
+          <ul id="easy-list" class="item-list"></ul>
+        </section>
+        <section class="column">
+          <h2>Сложные</h2>
+          <ul id="hard-list" class="item-list"></ul>
+        </section>
+      </div>
+    </section>
+
+    <section id="card-view" class="card-view" hidden>
+      <div class="card-actions no-print">
+        <button id="reshuffle-btn" type="button">Сгенерировать заново</button>
+        <button id="edit-btn" type="button">Редактировать выбор</button>
+        <button id="print-btn" type="button">Печать/сохранить PDF</button>
+        <button id="share-btn" type="button">Скопировать ссылку для обмена</button>
+        <span id="share-feedback" class="share-feedback" aria-live="polite"></span>
+      </div>
+      <div id="bingo-card" class="bingo-card" role="grid" aria-label="Bingo card"></div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
